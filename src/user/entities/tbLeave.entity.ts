@@ -46,7 +46,10 @@ export class tbLeave {
     status: string
 
     @Column()
-    reasonAdmin: string
+    statusHR: string
+
+    @Column()
+    reasonSuper: string
 
     @Column()
     dateApproved: string
@@ -55,9 +58,11 @@ export class tbLeave {
     record: string
 
     @Column()
+    dateRecord: string
+
+    @Column()
     comment: string
     
-    @Column()
-    pin: string
+ 
 
 }

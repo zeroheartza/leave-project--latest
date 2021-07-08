@@ -1,24 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty } from 'class-validator';
 
-export class UserProfileDto {
-
-
-    @IsNotEmpty()
-    @IsString()
-    @ApiProperty()
-    readonly token: string
-    
-    @IsNotEmpty()
-    @IsString()
-    @ApiProperty()
-    readonly userId: string
+export class AdminDto {
+ 
 
     @IsNotEmpty()
     @IsString()
     @ApiProperty()
     readonly firstName: string
-
+    
 
 
     @IsNotEmpty()
@@ -26,8 +16,15 @@ export class UserProfileDto {
     @ApiProperty()
     readonly lastName: string
 
-  
+    @IsNotEmpty()
+    @IsString()
+    @ApiProperty()
+    readonly email: string
 
+    @IsNotEmpty()
+    @IsString()
+    @ApiProperty()
+    readonly password: string
 
     @IsNotEmpty()
     @IsString()
@@ -39,18 +36,24 @@ export class UserProfileDto {
     @ApiProperty()
     readonly phone: string
 
-    @IsNotEmpty()
-    @IsString()
-    @ApiProperty()
-    readonly position: string
-
+    
 
     @IsString()
     @ApiProperty()
-    readonly department: string
+    readonly startingDate: string
 
 
+    @IsString()
+    @ApiProperty()
+    readonly annualLeave: string
 
+    @IsString()
+    @ApiProperty()
+    readonly businessLeave: string
+
+    @IsString()
+    @ApiProperty()
+    readonly sickLeave: string
 
 
 

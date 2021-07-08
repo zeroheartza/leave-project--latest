@@ -3,7 +3,10 @@ import { IsString, IsNotEmpty } from 'class-validator';
 
 export class LeaveDto {
 
-    
+    @IsNotEmpty()
+    @IsString()
+    @ApiProperty()
+    readonly token: string
 
     @IsNotEmpty()
     @IsString()
@@ -60,25 +63,15 @@ export class LeaveDto {
     @ApiProperty()
     readonly reason: string
 
-    @IsNotEmpty()
-    @IsString()
-    @ApiProperty()
-    readonly date: string
+ 
+
 
     @IsNotEmpty()
     @IsString()
     @ApiProperty()
-    readonly status: string
+    readonly reasonSuper: string  
 
-    @IsNotEmpty()
-    @IsString()
-    @ApiProperty()
-    readonly reasonAdmin: string
 
-    @IsNotEmpty()
-    @IsString()
-    @ApiProperty()
-    readonly dateApproved: string
 
     @IsNotEmpty()
     @IsString()
@@ -89,6 +82,16 @@ export class LeaveDto {
     @IsString()
     @ApiProperty()
     readonly comment: string
+
+
+    @IsNotEmpty()
+    @IsString()
+    @ApiProperty()
+    readonly status: string
+
+
+
+  
     
     @IsNotEmpty()
     @IsString()

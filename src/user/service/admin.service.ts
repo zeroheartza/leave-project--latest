@@ -1,6 +1,7 @@
 
 import { LoginDto } from "../dto/login.dto";
 import { UserDto } from "../dto/user.dto";
+import { AdminDto } from "../dto/admin.dto";
 import { DeleteDto } from "../dto/delete.dto";
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "./user.service";
@@ -14,35 +15,24 @@ export class AdminService extends UserService {
         super()
     }
 
-    createAdmin() {
-        const id = Math.floor(Math.random() * 10000) + 1;
-        const json = `{  "firstName":"admin" ,
-                        "lastName":"admin" ,
-                        "email":"admin@admin.com",
-                        "password":"admin1234",
-                        "staffId":"${id}",
-                        "phone":"",
-                        "position" :"AdminExecutive​",
-                        "department":"",
-                        "startingDate":"",
-                        "pin":"123456"
-          }`;
-        const admin = JSON.parse(json);
-        return this.create(admin)
+    async createAdmin(adminDto:AdminDto) {
+        const user = await this.addAdmin(adminDto);
+        return user
     }
 
 
     async createUser(userDto: UserDto, data: any) {
         try {
             const user = await this.findidUser(data['id']);
+            
             const role = user.userP[0].position
             const roleUser = this.checkroleUser(role);
             if (roleUser == enumRoleUser.admin) {
-                const user = await this.addUser(userDto);
+                const res = await this.addUser(userDto);
                 var time = new Date();
                 const datetime = time.toString()
-                await this.saveLogUser("Add User", user.id.toString(), "", `Add user ,name  ${userDto.firstName} ${userDto.lastName}`, datetime)
-                return { message: user.message }
+                await this.saveLogUser("เพิ่มผู้ใช้", user.user[0].userId.toString() , "สำเร็จ", `เพิ่มผู้ใช้งาน ${userDto.firstName} ${userDto.lastName}`, datetime)
+                return { message: res.message }
             }
             else {
                 return { message: "you are not admin" }
@@ -53,14 +43,23 @@ export class AdminService extends UserService {
             }
         }
     }
-    editUser(userProfileDto: UserProfileDto) {
-        return this.editUserProfile(userProfileDto)
+    async editUser(userId:string,userProfileDto: UserProfileDto) {
+        var time = new Date();
+        const datetime = time.toString()
+        const user = await this.editUserProfileAdmin(userProfileDto)
+       
+        
+        if(user.message==="Edit profile Success"){
+            await this.saveLogUser("แก้ไขข้อมูล", userId.toString(), "สำเร็จ", `แก้ไขข้อมูของ ${user.name}`, datetime)
+            return {message:user.message}
+        }
+        else{
+            return {message:user.message}
+        }
+       
     }
 
-    async editPin(data: any, pinDto: PinDto) {
-        const userId = data['id'];
-        return this.editUserPin(userId, pinDto)
-    }
+ 
 
     async deleteUser(deleteDto: DeleteDto,userId:string) {
         const user = await this.findidUser(userId);
@@ -70,7 +69,7 @@ export class AdminService extends UserService {
             var time = new Date();
             const datetime = time.toString()
             const user = await this.getProfile(deleteDto.userId)
-            const result = this.saveLogUser("Delete User", userId, "", `delete user ,name  ${user.message.name}` ,datetime)
+            const result = this.saveLogUser("ลบผู้ใช้", userId, "สำเร็จ", `ลบผู้ใช้งาน  ${user.message.name}` ,datetime)
             return this.delUser(+deleteDto.userId)
         }
         else {
@@ -79,11 +78,7 @@ export class AdminService extends UserService {
         
     }
 
-    addLeave(leaveDto: LeaveDto, res: any) {
-
-        return this.addLeaveUser(leaveDto, res)
-    }
-
+   
   
     findId(id: string) {
         return this.findidUser(id)
@@ -102,6 +97,11 @@ export class AdminService extends UserService {
         return this.getLookUp()
     }
 
+    getLeavesIdAdmin(position: string,leaveId :string) {
+        return this.findOneidLeaveAdmin(position,leaveId)
+    }
+
+
     getType() {
         return this.getTypeLeave()
     }
@@ -117,8 +117,8 @@ export class AdminService extends UserService {
         return roleUser
     }
 
-    getuser(res: any) {
-        return this.getUser(res)
+    getuser() {
+        return this.getUser()
     }
 
     async checkRoleAdmin(userId:string) {
@@ -153,6 +153,8 @@ export class AdminService extends UserService {
         const datetime = time.toString()
         return this.saveLogUser(category, userId, leaveId, comment, datetime)
     }
+
+
 
 
 

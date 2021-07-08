@@ -7,8 +7,9 @@ import { DeleteDto } from "../dto/delete.dto";
 import { LeaveDto } from "../dto/leave.dto";
 import { LeaveStaffDto } from "../dto/leaveStaff.dto";
 import { UserDto } from "../dto/user.dto";
+import { AdminDto } from "../dto/admin.dto";
 import { UserProfileDto } from "../dto/userProfile.dto";
-import { PinDto } from "../dto/pin.dto";
+
 import { TokenDto } from "../dto/token.dto";
 import { IdDto } from "../dto/id.dto";
 import { LogDto } from "../dto/log.dto";
@@ -18,7 +19,7 @@ import { Response, Request, response } from 'express';
 import { enumRoleUser } from "../../core/enum";
 import { resolveConfig } from "prettier";
 import { AllUserService } from "../service/alluser.service";
-
+import { LeaveIdDto } from "../dto/leaveId.dto";
 @Injectable()
 @ApiTags('Administrator')
 @Controller('admin')
@@ -33,26 +34,24 @@ export class adminController {
 
    // **************** Create *********************
 
+ 
+   
+   
    @Post('createAdmin')
    @ApiOkResponse()
-   async createAdmin(
-   ) {
-      return this.adminService.createAdmin();
+   async createAdmin(@Body(new ValidationPipe({
+      exceptionFactory: (errors: ValidationError[]) => new BadRequestException(errors),
+   })) adminDto:AdminDto
+   ){
+      return await this.adminService.createAdmin(adminDto);
    }
 
-   @Post('addLeave')
-   async addLeave(
-      @Body(new ValidationPipe({
-         exceptionFactory: (errors: ValidationError[]) => new BadRequestException(errors),
-      })) leaveDto: LeaveDto, @Res({ passthrough: true }) response: Response
-   ) {
-      const result = await this.adminService.addLeaveUser(leaveDto, response);
-      return { message: result }
-   }
+   
 
 
 
 
+   // **************** check *********************
    @Post('createUser')
    @ApiOkResponse()
    async createUser(@Body(new ValidationPipe({
@@ -68,44 +67,37 @@ export class adminController {
 
    // **************** Read *********************
 
-   @Get('getTypeLeave')
-   @ApiOkResponse()
-   async getTypeLeave(
-   ) {
-      return this.adminService.getType();
-   }
+   // @Get('getTypeLeave')
+   // @ApiOkResponse()
+   // async getTypeLeave(
+   // ) {
+   //    return this.adminService.getType();
+   // }
 
-   @Post('checkRole')
-   @ApiOkResponse()
-   async checkRole(@Body(new ValidationPipe({
-      exceptionFactory: (errors: ValidationError[]) => new BadRequestException(errors),
-   })) tokenDto: TokenDto, @Res({ passthrough: true }) res: Response
-   ) {
-      const token = tokenDto.token
-      const data = await this.jwtService.verifyAsync(token);
-      const roleUser = this.adminService.checkRole(data);
-      return roleUser
-   }
-
-   @Get('getUser')
-   @ApiOkResponse()
-   async getUsers(@Res() res: Response
-   ) {
-      return this.adminService.getuser(res);
-   }
+   // @Post('checkRole')
+   // @ApiOkResponse()
+   // async checkRole(@Body(new ValidationPipe({
+   //    exceptionFactory: (errors: ValidationError[]) => new BadRequestException(errors),
+   // })) tokenDto: TokenDto, @Res({ passthrough: true }) res: Response
+   // ) {
+   //    const token = tokenDto.token
+   //    const data = await this.jwtService.verifyAsync(token);
+   //    const roleUser = this.adminService.checkRole(data);
+   //    return roleUser
+   // }
 
 
-   @Post('getUserProfile')
-   @ApiOkResponse()
-   async getProfileUsers(@Body(new ValidationPipe({
-      exceptionFactory: (errors: ValidationError[]) => new BadRequestException(errors),
-   })) tokenDto: TokenDto
-   ) {
-      const token = tokenDto.token
-      const data = await this.jwtService.verifyAsync(token);
-      return this.adminService.getProfileUsers(data['id']);
-   }
 
+   // @Get('getUser')
+   // @ApiOkResponse()
+   // async getUsers(
+   // ) {
+   //    return this.adminService.getuser();
+   // }
+
+
+
+   // **************** check *********************
    @Get('getAllUserProfile')
    @ApiOkResponse()
    async getUserAllProfile(
@@ -114,14 +106,16 @@ export class adminController {
    }
 
 
-   @Get('getUserleave')
+   // **************** check *********************
+   @Get('getAllUserleave')
    @ApiOkResponse()
-   async getUserleave() {
+   async getAllUserleave() {
       return this.adminService.getLeaveUsers();
    }
 
 
-   @Post('getLogAll')
+   // **************** check *********************
+   @Post('getAllLog')
    @ApiOkResponse()
    async getLogAll(@Body(new ValidationPipe({
       exceptionFactory: (errors: ValidationError[]) => new BadRequestException(errors),
@@ -129,20 +123,24 @@ export class adminController {
    ) {
       try {
          const data = await this.jwtService.verifyAsync(tokenDto.token);
-         const statusRole = await this.adminService.checkRoleAdmin(data);
+         const statusRole = await this.adminService.checkRoleAdmin(data['id']);
          if (statusRole) {
-            return this.alluserService.findLogAll();
+            return this.adminService.logAll();
          }
          else {
             return { message: "you are not admin" }
          }
       } catch (e) {
-         return {
+         return {   
             message: "Can't find token"
          }
       }
    }
 
+
+
+
+   // **************** check *********************
    @Get('lookUp')
    @ApiOkResponse()
    async getLookUp(
@@ -156,32 +154,21 @@ export class adminController {
    // **************** Update *********************
 
 
+   // **************** check *********************
    @Post('editUser')
    @ApiOkResponse()
    async editUser(@Body(new ValidationPipe({
       exceptionFactory: (errors: ValidationError[]) => new BadRequestException(errors),
    })) userProfileDto: UserProfileDto
    ) {
-      console.log(userProfileDto)
-      return this.adminService.editUser(userProfileDto);
-
-
-   }
-
-
-   @Post('setPin')
-   @ApiOkResponse()
-   async setPin(@Body(new ValidationPipe({
-      exceptionFactory: (errors: ValidationError[]) => new BadRequestException(errors),
-   })) pinDto: PinDto, @Res({ passthrough: true }) res: Response
-   ) {
-      const data = await this.jwtService.verifyAsync(pinDto.token);
-      return this.adminService.editPin(data, pinDto);
+      const userId = await this.jwtService.verifyAsync(userProfileDto.token);
+      return this.adminService.editUser(userId['id'],userProfileDto);
    }
 
 
    // **************** Delete *********************
 
+   // **************** check *********************
    @Post('deleteUser')
    @ApiOkResponse()
    async deleteUser(@Body(new ValidationPipe({
@@ -189,9 +176,9 @@ export class adminController {
    })) deleteDto: DeleteDto
    ) {
       try {
-         const token = deleteDto.token
-         const userId = await this.jwtService.verifyAsync(token);
-         return this.adminService.deleteUser(deleteDto, userId);
+         const userId = await this.jwtService.verifyAsync(deleteDto.token);
+    
+         return this.adminService.deleteUser(deleteDto, userId['id']);
       } catch (e) {
          return {
             message: "Can't find token"

@@ -55,6 +55,19 @@ export class UserDto {
     readonly startingDate: string
 
 
+    @IsString()
+    @ApiProperty()
+    readonly annualLeave: string
+
+    @IsString()
+    @ApiProperty()
+    readonly businessLeave: string
+
+    @IsString()
+    @ApiProperty()
+    readonly sickLeave: string
+
+
 
 
 }

@@ -15,7 +15,7 @@ export class tbLog {
     comment: string
 
     @Column()
-    leaveId: string
+    status: string
 
     @Column()
     time: string

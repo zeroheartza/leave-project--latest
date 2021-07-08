@@ -32,13 +32,13 @@ export class tbUserProfile {
     startingDate: string
    
     @Column()
-    sickLeave : number
+    sickLeave : string
 
     @Column()
-    vacationLeave : number
+    vacationLeave : string
 
     @Column()
-    personalLeave : number
+    personalLeave : string
 
     @Column()
     userId : number
@@ -47,6 +47,6 @@ export class tbUserProfile {
     pin : string
 
 
+  
 
-    
 }

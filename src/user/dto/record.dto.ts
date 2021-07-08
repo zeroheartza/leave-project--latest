@@ -1,57 +1,43 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty } from 'class-validator';
 
-export class UserProfileDto {
+export class RecordDto {
 
+
+    @IsNotEmpty()
+    @IsString()
+    @ApiProperty()
+    readonly leaveId: string
+
+
+    @IsNotEmpty()
+    @IsString()
+    @ApiProperty()
+    readonly statusHR: string
+
+
+    @IsNotEmpty()
+    @IsString()
+    @ApiProperty()
+    readonly record: string
+
+    @IsNotEmpty()
+    @IsString()
+    @ApiProperty()
+    readonly comment: string
+
+    @IsNotEmpty()
+    @IsString()
+    @ApiProperty()
+    readonly pin: string
 
     @IsNotEmpty()
     @IsString()
     @ApiProperty()
     readonly token: string
-    
-    @IsNotEmpty()
-    @IsString()
-    @ApiProperty()
-    readonly userId: string
-
-    @IsNotEmpty()
-    @IsString()
-    @ApiProperty()
-    readonly firstName: string
-
-
-
-    @IsNotEmpty()
-    @IsString()
-    @ApiProperty()
-    readonly lastName: string
 
   
-
-
-    @IsNotEmpty()
-    @IsString()
-    @ApiProperty()
-    readonly staffId: string
-
-
-    @IsString()
-    @ApiProperty()
-    readonly phone: string
-
-    @IsNotEmpty()
-    @IsString()
-    @ApiProperty()
-    readonly position: string
-
-
-    @IsString()
-    @ApiProperty()
-    readonly department: string
-
-
-
-
+  
 
 
 
