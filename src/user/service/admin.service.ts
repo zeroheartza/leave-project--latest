@@ -10,6 +10,8 @@ import { UserProfileDto } from "../dto/userProfile.dto";
 import { enumRoleUser } from "../../core/enum";
 import { PinDto } from "../dto/pin.dto";
 import { LeaveStaffDto } from "../dto/leaveStaff.dto";
+import { Injectable, HttpStatus, HttpService, HttpException } from '@nestjs/common';
+
 export class AdminService extends UserService {
     constructor() {
         super()
@@ -35,12 +37,16 @@ export class AdminService extends UserService {
                 return { message: res.message }
             }
             else {
-                return { message: "you are not admin" }
+                throw new HttpException({
+                    "status": HttpStatus.BAD_REQUEST,
+                    "error": "you are not admin" ,
+                }, HttpStatus.BAD_REQUEST)
             }
         } catch (e) {
-            return {
-                message: "Can't find token"
-            }
+            throw new HttpException({
+                "status": HttpStatus.BAD_REQUEST,
+                "error": "Can't find token",
+            }, HttpStatus.BAD_REQUEST)
         }
     }
     async editUser(userId:string,userProfileDto: UserProfileDto) {
@@ -54,7 +60,10 @@ export class AdminService extends UserService {
             return {message:user.message}
         }
         else{
-            return {message:user.message}
+            throw new HttpException({
+                "status": HttpStatus.BAD_REQUEST,
+                "error": user.message ,
+            }, HttpStatus.BAD_REQUEST)
         }
        
     }

@@ -11,7 +11,7 @@ import { PinDto } from "../dto/pin.dto";
 import { Cron } from '@nestjs/schedule';
 import { LeaveStaffDto } from "../dto/leaveStaff.dto";
 import { PasswordDto } from "../dto/password.dto";
-
+import { Injectable, HttpStatus, HttpService, HttpException } from '@nestjs/common';
 export class AllUserService extends UserService {
     constructor() {
         super()
@@ -35,7 +35,11 @@ export class AllUserService extends UserService {
             return { message: user.message }
         }
         else {
-            return { message: user.message }
+            throw new HttpException({
+                "status": HttpStatus.BAD_REQUEST,
+                "error": user.message,
+            }, HttpStatus.BAD_REQUEST)
+            
         }
 
     }
@@ -78,32 +82,38 @@ export class AllUserService extends UserService {
                 if (user.userP[0].position == "Chief Executive Officer​") {
                     if (user.userP[0].pin != "") {
                         const status = "True"
-                        return { message: "Login Success", token: jwt, role: roleUser, pinStatus: status, name: user.userP[0].firstName + " " + user.userP[0].lastName, staffId: user.userP[0].staffId, language:"eng"}
+                        return {  token: jwt, role: roleUser}
                     }
                     else {
                         const status = "False"
-                        return { message: "Login Success", token: jwt, role: roleUser, pinStatus: status, name: user.userP[0].firstName + " " + user.userP[0].lastName, staffId: user.userP[0].staffId, language:"eng"}
+                        return {  token: jwt, role: roleUser}
                     }
                 }
                 else{
                     if (user.userP[0].pin != "") {
                         const status = "True"
-                        return { message: "Login Success", token: jwt, role: roleUser, pinStatus: status, name: user.userP[0].firstName + " " + user.userP[0].lastName, staffId: user.userP[0].staffId, language:"thai"}
+                        return {  token: jwt, role: roleUser}
                     }
                     else {
                         const status = "False"
-                        return { message: "Login Success", token: jwt, role: roleUser, pinStatus: status, name: user.userP[0].firstName + " " + user.userP[0].lastName, staffId: user.userP[0].staffId, language:"thai"}
+                        return {  token: jwt, role: roleUser}
                     }
 
                 }
             }
             else {
                 await this.saveLogUser("เข้าสู่ระบบ", userId, "ไม่สำเร็จ", `มีการเข้าสู่ระบบของผู้ใช้ ${user.userP[0].firstName + " " + user.userP[0].lastName}`, datetime)
-                return message
+                throw new HttpException({
+                    "status": HttpStatus.BAD_REQUEST,
+                    "error": message,
+                }, HttpStatus.BAD_REQUEST)
             }
         }
         else {
-            return message
+            throw new HttpException({
+                "status": HttpStatus.BAD_REQUEST,
+                "error": message,
+            }, HttpStatus.BAD_REQUEST)
         }
     }
 
@@ -114,11 +124,17 @@ export class AllUserService extends UserService {
                 return { status: true, message: result.message, userId: result.id }
             }
             else {
-                return { status: false, message: result.message, userId: result.id }
+                throw new HttpException({
+                    "status": HttpStatus.BAD_REQUEST,
+                    "error": result.message,
+                }, HttpStatus.BAD_REQUEST)
             }
         }
         else {
-            return { status: false, message: result.message, userId: result.id }
+            throw new HttpException({
+                "status": HttpStatus.BAD_REQUEST,
+                "error": result.message,
+            }, HttpStatus.BAD_REQUEST)
         }
     }
 
